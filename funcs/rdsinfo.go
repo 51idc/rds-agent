@@ -6,6 +6,7 @@ import (
 	"github.com/51idc/rds-agent/g"
 	"github.com/denverdino/aliyungo/rds"
 	"strings"
+	"log"
 )
 
 type alerror struct {
@@ -33,20 +34,18 @@ func RDSMetrics() (L []*model.MetricValue) {
 			}
 			dbInstancePerformanceResponse, err := DescribeDBInstancePerformance(metric_str)
 			if err != nil {
-				println("aly err ：", err.Error())
-			}
-			for _, performanceKey := range dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey {
-				for _, formance_value := range performanceKey.Values.PerformanceValue {
-					println("Date： ", formance_value.Date.String())
-				}
-				if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
-					if len(performanceKey.ValueFormat) > 0 && strings.Contains(performanceKey.ValueFormat, "&") {
-						performanceValue := performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value
-						for i, valueFormat := range strings.Split(performanceKey.ValueFormat, "&") {
-		 					L = append(L, GaugeValue(performanceKey.Key + "_" + strings.ToUpper(valueFormat), performanceValue[i]))
+				log.Println("aly err ：", err.Error())
+			} else {
+				for _, performanceKey := range dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey {
+					if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
+						if len(performanceKey.ValueFormat) > 0 && strings.Contains(performanceKey.ValueFormat, "&") {
+							performanceValue := performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value
+							for i, valueFormat := range strings.Split(performanceKey.ValueFormat, "&") {
+								L = append(L, GaugeValue(performanceKey.Key + "_" + strings.ToUpper(valueFormat), performanceValue[i]))
+							}
+						} else {
+							L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
 						}
-					} else {
-						L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
 					}
 				}
 			}
