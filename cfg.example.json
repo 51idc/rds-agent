@@ -1,7 +1,11 @@
 {
   "debug": true,
-  "hostname": "zsf-test-rds",
-  "ip": "192.168.6.9",
+  "hostname": "",
+  "ip": "",
+  "smartAPI": {
+    "enabled": true,
+    "url": "http://127.0.0.1/api/service/version"
+  },
   "plugin": {
     "enabled": false,
     "dir": "./plugin",
@@ -25,7 +29,7 @@
   },
   "http": {
     "enabled": true,
-    "listen": ":1988",
+    "listen": ":1999",
     "backdoor": false
   },
   "mysqlMetric": {

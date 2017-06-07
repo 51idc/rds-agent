@@ -24,29 +24,34 @@ func RDSMetrics() (L []*model.MetricValue) {
 	} else if (db_type == "rds_sqlserver") {
 		metric_list = g.Config().SQLServerMetric
 	}
-	if len(metric_list) > 0 {
-		if len(g.Config().AccessKeyId) > 0 && len(g.Config().AccessKeySecret) > 0 {
-			var metric_str string
-			for k, v := range metric_list {
-				if v {
-					metric_str += k + ","
-				}
-			}
-			dbInstancePerformanceResponse, err := DescribeDBInstancePerformance(metric_str)
-			if err != nil {
-				log.Println("aly err ：", err.Error())
-			} else {
-				for _, performanceKey := range dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey {
-					if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
-						if len(performanceKey.ValueFormat) > 0 && strings.Contains(performanceKey.ValueFormat, "&") {
-							performanceValue := performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value
-							for i, valueFormat := range strings.Split(performanceKey.ValueFormat, "&") {
-								L = append(L, GaugeValue(performanceKey.Key + "_" + strings.ToUpper(valueFormat), performanceValue[i]))
-							}
-						} else {
-							L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
-						}
+	if len(metric_list) < 1 {
+		log.Println("Metric Error.Check config")
+		return
+	}
+	if len(g.Config().AccessKeyId) < 1 && len(g.Config().AccessKeySecret) < 1 {
+		log.Println("AccessKeyId or AccessKeySecret Error.Check config")
+		return
+	}
+
+	var metric_str string
+	for k, v := range metric_list {
+		if v {
+			metric_str += k + ","
+		}
+	}
+	dbInstancePerformanceResponse, err := DescribeDBInstancePerformance(metric_str)
+	if err != nil {
+		log.Println("aly err ：", err.Error())
+	} else {
+		for _, performanceKey := range dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey {
+			if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
+				if len(performanceKey.ValueFormat) > 0 && strings.Contains(performanceKey.ValueFormat, "&") {
+					performanceValue := performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value
+					for i, valueFormat := range strings.Split(performanceKey.ValueFormat, "&") {
+						L = append(L, GaugeValue(performanceKey.Key + "_" + strings.ToUpper(valueFormat), performanceValue[i]))
 					}
+				} else {
+					L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
 				}
 			}
 		}

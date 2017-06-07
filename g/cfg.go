@@ -36,6 +36,11 @@ type HttpConfig struct {
 	Backdoor bool   `json:"backdoor"`
 }
 
+type SmartAPIConfig struct {
+	Enabled bool   `json:"enabled"`
+	Url     string `json:"url"`
+}
+
 type GlobalConfig struct {
 	Debug           bool             `json:"debug"`
 	Hostname        string           `json:"hostname"`
@@ -44,7 +49,7 @@ type GlobalConfig struct {
 	Heartbeat       *HeartbeatConfig `json:"heartbeat"`
 	Transfer        *TransferConfig  `json:"transfer"`
 	Http            *HttpConfig      `json:"http"`
-	SmartAPI        string           `json:"smartapi"`
+	SmartAPI        *SmartAPIConfig  `json:"smartAPI`
 	DBType          string           `json:"dbType"`
 	MySQLMetric     map[string]bool  `json:"mysqlMetric"`
 	SQLServerMetric map[string]bool  `json:"sqlserverMetric"`
