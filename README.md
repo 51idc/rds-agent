@@ -72,7 +72,7 @@ rds agent
     "SQLServer_IOPS": true,
     "SQLServer_SpaceUsage": true
   },
-  "dbType": "MySQL",        //MySQL or SQLServer
+  "dbType": "",        //rds_mysql or rds_sqlserver
   "accessKeyId": "",
   "accessKeySecret": "",
   "dbInstanceId": ""

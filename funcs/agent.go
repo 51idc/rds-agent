@@ -5,5 +5,5 @@ import (
 )
 
 func AgentMetrics() []*model.MetricValue {
-	return []*model.MetricValue{GaugeValue("rds.agent.alive", 1)}
+	return []*model.MetricValue{GaugeValue("RDS.Monitor.alive", 1)}
 }

@@ -19,9 +19,9 @@ type alerror struct {
 func RDSMetrics() (L []*model.MetricValue) {
 	db_type := g.Config().DBType
 	var metric_list map[string]bool
-	if (db_type == "MySQL") {
+	if (db_type == "rds_mysql") {
 		metric_list = g.Config().MySQLMetric
-	} else if (db_type == "SQLServer") {
+	} else if (db_type == "rds_sqlserver") {
 		metric_list = g.Config().SQLServerMetric
 	}
 	if len(metric_list) > 0 {

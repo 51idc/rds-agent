@@ -63,8 +63,8 @@
     "SQLServer_IOPS": true,
     "SQLServer_SpaceUsage": true
   },
-  "dbType": "MySQL",
-  "accessKeyId": "LTAIHEAN6tTQ5BAD",
-  "accessKeySecret": "mQxK7zSMSJT0t6Dw3E89xmFGH1Brty",
-  "dbInstanceId": "rm-m5e0019m366ct8085"
+  "dbType": "",
+  "accessKeyId": "",
+  "accessKeySecret": "",
+  "dbInstanceId": ""
 }
