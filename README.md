@@ -11,6 +11,10 @@ rds agent
   "debug": true,
   "hostname": "zsf-test-rds",
   "ip": "",
+  "smartAPI": {
+    "enabled": true,            // 这是我们自行扩展的功能，需要有对应的http接口接收。不用的可以置为false
+    "url": "http://127.0.0.1/api/service/version"
+  },
   "plugin": {
     "enabled": false,
     "dir": "./plugin",
