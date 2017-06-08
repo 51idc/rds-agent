@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"github.com/51idc/rds-agent/g"
 )
 
 type smartAPI_Data struct {
@@ -37,13 +38,16 @@ func sendData(url string, data smartAPI_Data) ([]byte, int, error) {
 	return body, res.StatusCode, err
 }
 
-func smartAPI_Push(url string, endpoint string, version string, debug bool) {
+func smartAPI_Push(version string) {
+	debug := g.Config().Debug
+	smartAPI_url := g.Config().SmartAPI.Url
+	endpoint, err := g.Hostname()
 	var data smartAPI_Data
 	var result smartAPI_Result
 
 	data.Endpoint = endpoint
 	data.Version = version
-	body, res, err := sendData(url, data)
+	body, res, err := sendData(smartAPI_url, data)
 	if err != nil {
 		log.Println(err)
 		return
