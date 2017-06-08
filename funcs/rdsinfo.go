@@ -18,6 +18,24 @@ type alerror struct {
 
 func RDSMetrics() (L []*model.MetricValue) {
 	db_type := g.Config().DBType
+	// push version
+	if g.Config().SmartAPI.Enabled {
+		describeDBInstanceAttribute, err := DescribeDBInstanceAttribute()
+		if err != nil {
+			log.Println("GET Instance Version Interface Error ：", err.Error())
+		} else {
+			dbInstanceAttribute := describeDBInstanceAttribute.Items.DBInstanceAttribute
+			if len(dbInstanceAttribute) != 1 {
+				log.Println("GET Instance Version No Data Error .")
+			} else {
+				version := ""
+				version += string(dbInstanceAttribute[0].Engine)
+				version += " "
+				version += dbInstanceAttribute[0].EngineVersion
+				smartAPI_Push(version)
+			}
+		}
+	}
 	var metric_list map[string]bool
 	if (db_type == "rds_mysql") {
 		metric_list = g.Config().MySQLMetric
@@ -45,7 +63,9 @@ func RDSMetrics() (L []*model.MetricValue) {
 		log.Println("GET Instance Monitor Info  Interface Error ：", err.Error())
 		return
 	}
-
+	if len(dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey) < 1 {
+		log.Println("GET Instance Monitor Info NO  Data Error .")
+	}
 	for _, performanceKey := range dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey {
 		if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
 			if len(performanceKey.ValueFormat) > 0 && strings.Contains(performanceKey.ValueFormat, "&") {
@@ -56,26 +76,11 @@ func RDSMetrics() (L []*model.MetricValue) {
 			} else {
 				L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
 			}
-		}
-	}
-	// push version
-	if g.Config().SmartAPI.Enabled {
-		describeDBInstanceAttribute, err := DescribeDBInstanceAttribute()
-		if err != nil {
-			log.Println("GET Instance Version Interface Error ：", err.Error())
 		} else {
-			dbInstanceAttribute := describeDBInstanceAttribute.Items.DBInstanceAttribute
-			if len(dbInstanceAttribute) != 1 {
-				log.Println("GET Instance Version Data Error ：", err.Error())
-			} else {
-				version := ""
-				version += string(dbInstanceAttribute[0].Engine)
-				version += " "
-				version += dbInstanceAttribute[0].EngineVersion
-				smartAPI_Push(version)
-			}
+			log.Println("GET Instance Monitor Info  Data Info Error .")
 		}
 	}
+
 	return L
 }
 
