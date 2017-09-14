@@ -70,8 +70,9 @@ func RDSMetrics() (L []*model.MetricValue) {
 		if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
 			if len(performanceKey.ValueFormat) > 0 && strings.Contains(performanceKey.ValueFormat, "&") {
 				performanceValue := performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value
+				performanceValue_arr := strings.Split(performanceValue, "&")
 				for i, valueFormat := range strings.Split(performanceKey.ValueFormat, "&") {
-					L = append(L, GaugeValue(performanceKey.Key + "_" + strings.ToUpper(valueFormat), performanceValue[i]))
+					L = append(L, GaugeValue(performanceKey.Key + "_" + strings.ToUpper(valueFormat), performanceValue_arr[i]))
 				}
 			} else {
 				L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
