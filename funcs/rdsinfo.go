@@ -3,10 +3,10 @@ package funcs
 import (
 	"github.com/open-falcon/common/model"
 	"time"
-	"github.com/51idc/rds-agent/g"
+	"github.com/anchnet/rds-agent/g"
 	"github.com/denverdino/aliyungo/rds"
 	"strings"
-	"log"
+	log "github.com/cihub/seelog"
 )
 
 type alerror struct {
@@ -22,11 +22,11 @@ func RDSMetrics() (L []*model.MetricValue) {
 	if g.Config().SmartAPI.Enabled {
 		describeDBInstanceAttribute, err := DescribeDBInstanceAttribute()
 		if err != nil {
-			log.Println("GET Instance Version Interface Error ：", err.Error())
+			log.Info("GET Instance Version Interface Error ：", err.Error())
 		} else {
 			dbInstanceAttribute := describeDBInstanceAttribute.Items.DBInstanceAttribute
 			if len(dbInstanceAttribute) != 1 {
-				log.Println("GET Instance Version No Data Error .")
+				log.Info("GET Instance Version No Data Error .")
 			} else {
 				version := ""
 				version += string(dbInstanceAttribute[0].Engine)
@@ -43,11 +43,11 @@ func RDSMetrics() (L []*model.MetricValue) {
 		metric_list = g.Config().SQLServerMetric
 	}
 	if len(metric_list) < 1 {
-		log.Println("Metric Error.Check config")
+		log.Info("Metric Error.Check config")
 		return
 	}
 	if len(g.Config().AccessKeyId) < 1 && len(g.Config().AccessKeySecret) < 1 {
-		log.Println("AccessKeyId or AccessKeySecret Error.Check config")
+		log.Info("AccessKeyId or AccessKeySecret Error.Check config")
 		return
 	}
 
@@ -60,11 +60,11 @@ func RDSMetrics() (L []*model.MetricValue) {
 
 	dbInstancePerformanceResponse, err := DescribeDBInstancePerformance(metric_str)
 	if err != nil {
-		log.Println("GET Instance Monitor Info  Interface Error ：", err.Error())
+		log.Info("GET Instance Monitor Info  Interface Error ：", err.Error())
 		return
 	}
 	if len(dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey) < 1 {
-		log.Println("GET Instance Monitor Info NO  Data Error .")
+		log.Info("GET Instance Monitor Info NO  Data Error .")
 	}
 	for _, performanceKey := range dbInstancePerformanceResponse.PerformanceKeys.PerformanceKey {
 		if len(performanceKey.Key) > 0 && metric_list[performanceKey.Key] && len(performanceKey.Values.PerformanceValue) > 0 {
@@ -78,7 +78,7 @@ func RDSMetrics() (L []*model.MetricValue) {
 				L = append(L, GaugeValue(performanceKey.Key, performanceKey.Values.PerformanceValue[len(performanceKey.Values.PerformanceValue) - 1].Value))
 			}
 		} else {
-			log.Println("GET Instance Monitor Info  Data Info Error .")
+			log.Info("GET Instance Monitor Info  Data Info Error .")
 		}
 	}
 

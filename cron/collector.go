@@ -3,9 +3,9 @@ package cron
 import (
 	"time"
 
-	"github.com/51idc/rds-agent/g"
+	"github.com/anchnet/rds-agent/g"
 	"github.com/open-falcon/common/model"
-	"github.com/51idc/rds-agent/funcs"
+	"github.com/anchnet/rds-agent/funcs"
 )
 
 func Collect() {

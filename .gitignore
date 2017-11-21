@@ -11,4 +11,4 @@
 smarteye-port-monitor
 *.exe
 /gitversion
-
+debug

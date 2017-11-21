@@ -1,11 +1,12 @@
 package g
 
 import (
-	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	log "github.com/cihub/seelog"
 
 	"github.com/open-falcon/common/model"
 	"github.com/toolkits/net"
@@ -18,7 +19,7 @@ func InitRootDir() {
 	var err error
 	Root, err = os.Getwd()
 	if err != nil {
-		log.Fatalln("getwd fail:", err)
+		log.Error("getwd fail:", err)
 	}
 }
 
@@ -28,7 +29,7 @@ func InitLocalIps() {
 	var err error
 	LocalIps, err = net.IntranetIP()
 	if err != nil {
-		log.Fatalln("get intranet ip fail:", err)
+		log.Error("get intranet ip fail:", err)
 	}
 }
 
@@ -54,7 +55,7 @@ func SendToTransfer(metrics []*model.MetricValue) {
 
 	if debug {
 		for i, _ := range metrics {
-			log.Printf("=> <Total=%d> %v\n", len(metrics), metrics[i])
+			log.Infof("=> <Total=%d> %v\n", len(metrics), metrics[i])
 		}
 	}
 
@@ -62,7 +63,7 @@ func SendToTransfer(metrics []*model.MetricValue) {
 	SendMetrics(metrics, &resp)
 
 	if debug {
-		log.Println("<=", &resp)
+		log.Info("<=", &resp)
 	}
 }
 

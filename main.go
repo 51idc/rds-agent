@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"os"
-	"github.com/51idc/rds-agent/g"
-	"github.com/51idc/rds-agent/funcs"
-	"github.com/51idc/rds-agent/cron"
-	"github.com/51idc/rds-agent/http"
+
+	"github.com/anchnet/rds-agent/cron"
+	"github.com/anchnet/rds-agent/funcs"
+	"github.com/anchnet/rds-agent/g"
+	"github.com/anchnet/rds-agent/http"
 )
 
 func main() {
@@ -27,6 +28,9 @@ func main() {
 	}
 
 	g.ParseConfig(*cfg)
+	//init seelog
+	g.InitSeeLog()
+
 	g.InitRootDir()
 	g.InitLocalIps()
 	g.InitRpcClients()
@@ -38,10 +42,6 @@ func main() {
 	select {}
 
 }
-
-
-
-
 
 //
 //import (

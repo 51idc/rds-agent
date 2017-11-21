@@ -1,7 +1,7 @@
 package funcs
 
 import (
-	"github.com/51idc/rds-agent/g"
+	"github.com/anchnet/rds-agent/g"
 	"github.com/denverdino/aliyungo/rds"
 )
 
